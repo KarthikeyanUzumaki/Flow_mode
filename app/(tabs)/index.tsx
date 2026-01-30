@@ -22,12 +22,10 @@ export default function FlowModeScreen() {
   const [seconds, setSeconds] = useState(FOCUS_TIME);
   const [isActive, setIsActive] = useState(false);
 
-  // Animation values
   const pulseScale = useSharedValue(1);
   const pulseOpacity = useSharedValue(0.3);
   const buttonScale = useSharedValue(1);
 
-  // Start breathing animation when active
   useEffect(() => {
     if (isActive) {
       pulseScale.value = withRepeat(
@@ -46,7 +44,6 @@ export default function FlowModeScreen() {
     }
   }, [isActive]);
 
-  // Timer Logic
   useEffect(() => {
     let interval: any = null;
     if (isActive && seconds > 0) {
@@ -152,7 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 90,
     fontWeight: '200',
     color: '#F8FAFC',
-    fontVariant: ['tabular-nums'], // Keeps numbers monospaced so they don't jitter
+    fontVariant: ['tabular-nums'],
     letterSpacing: -2,
   },
   controls: {

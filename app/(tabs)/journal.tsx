@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E293B',
     padding: 16,
     borderRadius: 16,
-    borderCurve: 'continuous', // smoother iOS corners
+    borderCurve: 'continuous',
   },
   timeText: { color: '#94A3B8', fontSize: 12, marginBottom: 4, fontWeight: '600' },
   entryText: { color: '#E2E8F0', fontSize: 16, lineHeight: 24 },
