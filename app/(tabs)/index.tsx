@@ -1,98 +1,180 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-native';
+import { Text, Surface } from 'react-native-paper';
+import Animated, { 
+  useSharedValue, 
+  useAnimatedStyle, 
+  withRepeat, 
+  withTiming, 
+  withSpring, 
+  Easing,
+  FadeInDown,
+  withSequence
+} from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { formatTime } from '../../src/logic/timer';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const FOCUS_TIME = 1500; 
+const { width } = Dimensions.get('window');
 
-export default function HomeScreen() {
+export default function FlowModeScreen() {
+  const [seconds, setSeconds] = useState(FOCUS_TIME);
+  const [isActive, setIsActive] = useState(false);
+
+  // Animation values
+  const pulseScale = useSharedValue(1);
+  const pulseOpacity = useSharedValue(0.3);
+  const buttonScale = useSharedValue(1);
+
+  // Start breathing animation when active
+  useEffect(() => {
+    if (isActive) {
+      pulseScale.value = withRepeat(
+        withTiming(1.5, { duration: 2000, easing: Easing.out(Easing.ease) }),
+        -1, 
+        true
+      );
+      pulseOpacity.value = withRepeat(
+        withTiming(0, { duration: 2000, easing: Easing.out(Easing.ease) }),
+        -1, 
+        true
+      );
+    } else {
+      pulseScale.value = withTiming(1);
+      pulseOpacity.value = withTiming(0.1);
+    }
+  }, [isActive]);
+
+  // Timer Logic
+  useEffect(() => {
+    let interval: any = null;
+    if (isActive && seconds > 0) {
+      interval = setInterval(() => setSeconds((s) => s - 1), 1000);
+    } else if (seconds === 0) {
+      setIsActive(false);
+      if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+    return () => clearInterval(interval);
+  }, [isActive, seconds]);
+
+  const toggleTimer = () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setIsActive(!isActive);
+    buttonScale.value = withSequence(withSpring(0.9), withSpring(1));
+  };
+
+  const resetTimer = () => {
+    if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setIsActive(false);
+    setSeconds(FOCUS_TIME);
+  };
+
+  const animatedPulseStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: pulseScale.value }],
+    opacity: pulseOpacity.value,
+  }));
+
+  const animatedButtonStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }));
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <View style={styles.container}>
+      {/* Background Pulse Effect */}
+      <View style={styles.pulseContainer}>
+        <Animated.View style={[styles.pulseCircle, animatedPulseStyle]} />
+      </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <Animated.View entering={FadeInDown.delay(100).springify()} style={styles.header}>
+        <Text variant="labelLarge" style={styles.statusText}>
+          {isActive ? 'FOCUSING...' : 'READY TO FLOW'}
+        </Text>
+      </Animated.View>
+
+      <View style={styles.timerContainer}>
+        <Text style={styles.timerText}>{formatTime(seconds)}</Text>
+      </View>
+
+      <Animated.View entering={FadeInDown.delay(300).springify()} style={styles.controls}>
+        <TouchableOpacity onPress={resetTimer} style={styles.secondaryBtn}>
+          <MaterialCommunityIcons name="refresh" size={24} color="#94A3B8" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={toggleTimer} activeOpacity={0.8}>
+          <Animated.View style={[styles.playButton, animatedButtonStyle, { backgroundColor: isActive ? '#EF4444' : '#38BDF8' }]}>
+            <MaterialCommunityIcons name={isActive ? "pause" : "play"} size={40} color="white" />
+          </Animated.View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.secondaryBtn}>
+           {/* Placeholder for settings or sound toggle */}
+          <MaterialCommunityIcons name="cog-outline" size={24} color="#94A3B8" />
+        </TouchableOpacity>
+      </Animated.View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: { 
+    flex: 1, 
+    backgroundColor: '#0F172A', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  pulseContainer: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: -1,
+  },
+  pulseCircle: {
+    width: width * 0.8,
+    height: width * 0.8,
+    borderRadius: width * 0.4,
+    backgroundColor: 'rgba(56, 189, 248, 0.2)',
+  },
+  header: {
+    position: 'absolute',
+    top: 80,
+  },
+  statusText: {
+    color: '#94A3B8',
+    letterSpacing: 4,
+    fontWeight: '700',
+    fontSize: 12
+  },
+  timerContainer: {
+    marginBottom: 40,
+  },
+  timerText: {
+    fontSize: 90,
+    fontWeight: '200',
+    color: '#F8FAFC',
+    fontVariant: ['tabular-nums'], // Keeps numbers monospaced so they don't jitter
+    letterSpacing: -2,
+  },
+  controls: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 40,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  playButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#38BDF8',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  secondaryBtn: {
+    padding: 15,
+    borderRadius: 20,
+    backgroundColor: 'rgba(30, 41, 59, 0.5)',
+  }
 });

@@ -1,33 +1,35 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+    <Tabs screenOptions={{ 
+      tabBarStyle: { backgroundColor: '#1E293B', borderTopWidth: 0, height: 60 }, 
+      headerShown: false,
+      tabBarActiveTintColor: '#38BDF8',
+      tabBarInactiveTintColor: '#94A3B8',
+      tabBarLabelStyle: { fontSize: 12, marginBottom: 5 }
+    }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Flow',
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="timer-outline" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="journal"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Journal',
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="book-outline" size={28} color={color} />,
+        }}
+      />
+      {/* NEW PROFILE TAB */}
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="account-circle-outline" size={28} color={color} />,
         }}
       />
     </Tabs>
