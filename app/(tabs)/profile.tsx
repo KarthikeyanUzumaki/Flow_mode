@@ -14,6 +14,9 @@ export default function ProfileScreen() {
         </View>
 
         <ScrollView>
+          <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
+            
+          </ScrollView>
           <View style={styles.profileSection}>
             <Avatar.Text size={80} label="ME" style={styles.avatar} color="#F8FAFC" />
             <Text variant="titleLarge" style={styles.name}>Flow User</Text>

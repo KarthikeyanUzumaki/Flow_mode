@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, FlatList, TextInput, Platform, KeyboardAvoidingView } from 'react-native';
-import { Text, IconButton, Surface } from 'react-native-paper';
+import { View, StyleSheet, FlatList, Platform, KeyboardAvoidingView } from 'react-native';
+// FIX: Move TextInput from 'react-native' to 'react-native-paper'
+import { Text, IconButton, Surface, TextInput } from 'react-native-paper'; 
 import Animated, { FadeInUp, Layout } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 
@@ -23,7 +24,6 @@ export default function JournalScreen() {
       text: text.trim(),
       timestamp: new Date(),
     };
-
     setEntries([newEntry, ...entries]);
     setText('');
   };
@@ -71,12 +71,19 @@ export default function JournalScreen() {
 
       <Surface style={styles.inputContainer} elevation={4}>
         <TextInput
+          mode="outlined" // Explicitly set mode to outlined so outlineColor props work
           style={styles.input}
           placeholder="Write your thought..."
           placeholderTextColor="#64748B"
           value={text}
           onChangeText={setText}
           multiline
+          textColor="white"
+          // These props now work because we are using Paper's TextInput
+          activeOutlineColor="transparent"
+          outlineColor="transparent"
+          theme={{ colors: { onSurfaceVariant: 'transparent' } }} // Hides default border in some versions
+          selectionColor="#38BDF8"
         />
         <IconButton
           icon="arrow-up"
@@ -86,6 +93,7 @@ export default function JournalScreen() {
           size={24}
           onPress={addEntry}
           disabled={!text.trim()}
+          style={styles.sendBtn}
         />
       </Surface>
     </KeyboardAvoidingView>
@@ -103,15 +111,32 @@ const styles = StyleSheet.create({
   },
   title: { color: '#F8FAFC', fontWeight: '800', letterSpacing: -0.5 },
   date: { color: '#94A3B8', fontSize: 14, fontWeight: '500', marginTop: 4, textTransform: 'uppercase', letterSpacing: 1 },
-  listContent: { padding: 20, paddingBottom: 100 },
+  listContent: { padding: 20, paddingBottom: 150 },
   entryWrapper: { flexDirection: 'row', marginBottom: 20, position: 'relative' },
   timelineLine: { position: 'absolute', left: 6, top: 20, bottom: -20, width: 2, backgroundColor: '#1E293B', zIndex: -1 },
   timelineDot: { width: 14, height: 14, borderRadius: 7, backgroundColor: '#38BDF8', borderWidth: 3, borderColor: '#0F172A', marginTop: 6, marginRight: 15 },
-  card: { flex: 1, backgroundColor: '#1E293B', padding: 16, borderRadius: 16 },
+  card: { flex: 1, backgroundColor: '#1E293B', padding: 16, borderRadius: 16, borderCurve: 'continuous' },
   timeText: { color: '#94A3B8', fontSize: 12, marginBottom: 4, fontWeight: '600' },
   entryText: { color: '#E2E8F0', fontSize: 16, lineHeight: 24 },
-  inputContainer: { flexDirection: 'row', alignItems: 'center', padding: 12, paddingHorizontal: 16, backgroundColor: '#1E293B', margin: 16, borderRadius: 30, marginBottom: Platform.OS === 'ios' ? 40 : 20 },
-  input: { flex: 1, color: 'white', fontSize: 16, maxHeight: 100, paddingRight: 10, paddingVertical: 8 },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 6,
+    paddingLeft: 16,
+    backgroundColor: '#1E293B',
+    margin: 16,
+    borderRadius: 30,
+    marginBottom: 100, 
+  },
+  input: { 
+    flex: 1, 
+    backgroundColor: 'transparent',
+    fontSize: 16, 
+    maxHeight: 100, 
+  },
+  sendBtn: {
+    margin: 4,
+  },
   emptyState: { alignItems: 'center', marginTop: 100, opacity: 0.5 },
   emptyText: { color: '#F8FAFC', fontSize: 18, fontWeight: '600' },
   emptySubText: { color: '#94A3B8', marginTop: 8 },

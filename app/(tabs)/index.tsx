@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import { Text } from 'react-native-paper';
+import { useRouter } from 'expo-router'; // <--- IMPORT THIS
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
@@ -19,6 +20,7 @@ const FOCUS_TIME = 1500;
 const { width } = Dimensions.get('window');
 
 export default function FlowModeScreen() {
+  const router = useRouter(); // <--- USE ROUTER
   const [seconds, setSeconds] = useState(FOCUS_TIME);
   const [isActive, setIsActive] = useState(false);
 
@@ -103,7 +105,10 @@ export default function FlowModeScreen() {
           </Animated.View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.secondaryBtn}>
+        <TouchableOpacity 
+          style={styles.secondaryBtn}
+          onPress={() => router.push('/profile')} // <--- NAVIGATE TO PROFILE
+        >
           <MaterialCommunityIcons name="cog-outline" size={24} color="#94A3B8" />
         </TouchableOpacity>
       </Animated.View>
@@ -112,64 +117,14 @@ export default function FlowModeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flex: 1, 
-    backgroundColor: '#0F172A', 
-    alignItems: 'center', 
-    justifyContent: 'center' 
-  },
-  pulseContainer: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: -1,
-  },
-  pulseCircle: {
-    width: width * 0.8,
-    height: width * 0.8,
-    borderRadius: width * 0.4,
-    backgroundColor: 'rgba(56, 189, 248, 0.2)',
-  },
-  header: {
-    position: 'absolute',
-    top: 80,
-  },
-  statusText: {
-    color: '#94A3B8',
-    letterSpacing: 4,
-    fontWeight: '700',
-    fontSize: 12
-  },
-  timerContainer: {
-    marginBottom: 40,
-  },
-  timerText: {
-    fontSize: 90,
-    fontWeight: '200',
-    color: '#F8FAFC',
-    fontVariant: ['tabular-nums'], 
-    letterSpacing: -2,
-  },
-  controls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 40,
-  },
-  playButton: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#38BDF8',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
-  },
-  secondaryBtn: {
-    padding: 15,
-    borderRadius: 20,
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
-  }
+  container: { flex: 1, backgroundColor: '#0F172A', alignItems: 'center', justifyContent: 'center' },
+  pulseContainer: { ...StyleSheet.absoluteFillObject, alignItems: 'center', justifyContent: 'center', zIndex: -1 },
+  pulseCircle: { width: width * 0.8, height: width * 0.8, borderRadius: width * 0.4, backgroundColor: 'rgba(56, 189, 248, 0.2)' },
+  header: { position: 'absolute', top: 80 },
+  statusText: { color: '#94A3B8', letterSpacing: 4, fontWeight: '700', fontSize: 12 },
+  timerContainer: { marginBottom: 40 },
+  timerText: { fontSize: 90, fontWeight: '200', color: '#F8FAFC', fontVariant: ['tabular-nums'], letterSpacing: -2 },
+  controls: { flexDirection: 'row', alignItems: 'center', gap: 40 },
+  playButton: { width: 80, height: 80, borderRadius: 40, justifyContent: 'center', alignItems: 'center', shadowColor: '#38BDF8', shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.3, shadowRadius: 20, elevation: 10 },
+  secondaryBtn: { padding: 15, borderRadius: 20, backgroundColor: 'rgba(30, 41, 59, 0.5)' }
 });
