@@ -14,7 +14,6 @@ export default function ProfileScreen() {
         </View>
 
         <ScrollView>
-          {/* User Info Section */}
           <View style={styles.profileSection}>
             <Avatar.Text size={80} label="ME" style={styles.avatar} color="#F8FAFC" />
             <Text variant="titleLarge" style={styles.name}>Flow User</Text>
@@ -33,7 +32,6 @@ export default function ProfileScreen() {
             </View>
           </View>
 
-          {/* Settings Section */}
           <View style={styles.settingsSection}>
             <List.Section>
               <List.Subheader style={styles.subheader}>Appearance</List.Subheader>
@@ -43,9 +41,7 @@ export default function ProfileScreen() {
                 left={() => <List.Icon icon="theme-light-dark" color="#94A3B8" />}
                 right={() => <Switch value={isDarkTheme} onValueChange={setIsDarkTheme} color="#38BDF8" />}
               />
-              
               <Divider style={styles.listDivider} />
-
               <List.Subheader style={styles.subheader}>Preferences</List.Subheader>
               <List.Item
                 title="Notifications"

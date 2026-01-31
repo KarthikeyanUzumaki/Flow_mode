@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Dimensions, Platform } from 'react-native';
-import { Text, Surface } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import Animated, { 
   useSharedValue, 
   useAnimatedStyle, 
@@ -9,7 +9,7 @@ import Animated, {
   withSpring, 
   Easing,
   FadeInDown,
-  withSequence
+  withSequence 
 } from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -78,7 +78,6 @@ export default function FlowModeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Background Pulse Effect */}
       <View style={styles.pulseContainer}>
         <Animated.View style={[styles.pulseCircle, animatedPulseStyle]} />
       </View>
@@ -105,7 +104,6 @@ export default function FlowModeScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.secondaryBtn}>
-           {/* Placeholder for settings or sound toggle */}
           <MaterialCommunityIcons name="cog-outline" size={24} color="#94A3B8" />
         </TouchableOpacity>
       </Animated.View>
@@ -149,7 +147,7 @@ const styles = StyleSheet.create({
     fontSize: 90,
     fontWeight: '200',
     color: '#F8FAFC',
-    fontVariant: ['tabular-nums'],
+    fontVariant: ['tabular-nums'], 
     letterSpacing: -2,
   },
   controls: {

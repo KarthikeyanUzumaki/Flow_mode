@@ -16,7 +16,6 @@ export default function JournalScreen() {
 
   const addEntry = () => {
     if (!text.trim()) return;
-    
     if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
     const newEntry: Entry = {
@@ -37,7 +36,6 @@ export default function JournalScreen() {
     >
       <View style={styles.timelineLine} />
       <View style={styles.timelineDot} />
-      
       <Surface style={styles.card} elevation={0}>
         <Text style={styles.timeText}>
           {item.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -105,61 +103,15 @@ const styles = StyleSheet.create({
   },
   title: { color: '#F8FAFC', fontWeight: '800', letterSpacing: -0.5 },
   date: { color: '#94A3B8', fontSize: 14, fontWeight: '500', marginTop: 4, textTransform: 'uppercase', letterSpacing: 1 },
-  
   listContent: { padding: 20, paddingBottom: 100 },
-  
-  entryWrapper: {
-    flexDirection: 'row',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  timelineLine: {
-    position: 'absolute',
-    left: 6,
-    top: 20,
-    bottom: -20,
-    width: 2,
-    backgroundColor: '#1E293B',
-    zIndex: -1,
-  },
-  timelineDot: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: '#38BDF8',
-    borderWidth: 3,
-    borderColor: '#0F172A',
-    marginTop: 6,
-    marginRight: 15,
-  },
-  card: {
-    flex: 1,
-    backgroundColor: '#1E293B',
-    padding: 16,
-    borderRadius: 16,
-    borderCurve: 'continuous',
-  },
+  entryWrapper: { flexDirection: 'row', marginBottom: 20, position: 'relative' },
+  timelineLine: { position: 'absolute', left: 6, top: 20, bottom: -20, width: 2, backgroundColor: '#1E293B', zIndex: -1 },
+  timelineDot: { width: 14, height: 14, borderRadius: 7, backgroundColor: '#38BDF8', borderWidth: 3, borderColor: '#0F172A', marginTop: 6, marginRight: 15 },
+  card: { flex: 1, backgroundColor: '#1E293B', padding: 16, borderRadius: 16 },
   timeText: { color: '#94A3B8', fontSize: 12, marginBottom: 4, fontWeight: '600' },
   entryText: { color: '#E2E8F0', fontSize: 16, lineHeight: 24 },
-
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#1E293B',
-    margin: 16,
-    borderRadius: 30,
-    marginBottom: Platform.OS === 'ios' ? 40 : 20,
-  },
-  input: {
-    flex: 1,
-    color: 'white',
-    fontSize: 16,
-    maxHeight: 100,
-    paddingRight: 10,
-    paddingVertical: 8,
-  },
+  inputContainer: { flexDirection: 'row', alignItems: 'center', padding: 12, paddingHorizontal: 16, backgroundColor: '#1E293B', margin: 16, borderRadius: 30, marginBottom: Platform.OS === 'ios' ? 40 : 20 },
+  input: { flex: 1, color: 'white', fontSize: 16, maxHeight: 100, paddingRight: 10, paddingVertical: 8 },
   emptyState: { alignItems: 'center', marginTop: 100, opacity: 0.5 },
   emptyText: { color: '#F8FAFC', fontSize: 18, fontWeight: '600' },
   emptySubText: { color: '#94A3B8', marginTop: 8 },
